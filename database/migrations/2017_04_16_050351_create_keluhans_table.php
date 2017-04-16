@@ -14,11 +14,12 @@ class CreateKeluhansTable extends Migration
     public function up()
     {
         Schema::create('keluhans', function (Blueprint $table) {
-            $table->increments('id_keluhan');
-            $table->integer('id_user');
+            $table->string('id_keluhan');
+            $table->string('id_user');
             $table->integer('jenis_keluhan');
-            $table->string('keanoniman');
-            $table->string('status_keluhan');
+             $table->text('isi_keluhan');
+            $table->boolean('keanoniman');
+            $table->integer('status_keluhan');
             $table->timestamps();
         });
     }
