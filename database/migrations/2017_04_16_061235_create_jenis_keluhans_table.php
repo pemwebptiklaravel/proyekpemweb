@@ -15,7 +15,7 @@ class CreateJenisKeluhansTable extends Migration
     {
          Schema::create('jenis_keluhans', function (Blueprint $table) {
             $table->increments('id_jenis_keluhan');
-            $table->string('kategori');
+            $table->string('jenis_keluhan');
         });
     }
 
