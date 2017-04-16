@@ -15,7 +15,7 @@ class CreateStatusKeluhansTable extends Migration
     {
         Schema::create('status_keluhans', function (Blueprint $table) {
             $table->increments('id_status');
-            $table->string('keterangan');
+            $table->string('status_keluhan');
         });
     }
 
