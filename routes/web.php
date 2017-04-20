@@ -15,4 +15,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/keluhan', 'KeluhanController@index');
+Route::group(['prefix' => 'keluhan'], function(){
+ 	Route::get('/', 'KeluhanController@index');
+});
