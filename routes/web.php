@@ -15,6 +15,17 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
+
+Route::resource ('keluhan','KeluhanController');
 Route::group(['prefix' => 'keluhan'], function(){
- 	Route::get('/', 'KeluhanController@index');
+
+	Route::get('/keluhan', 'KeluhanController@index');
+	Route::get('/create', 'KeluhanController@create');
+	Route::post('/store', 'KeluhanController@store');
+	Route::get('/show/{id}', 'KeluhanController@show');
+	Route::post('/update/{id}', 'KeluhanController@update');
+	
+
 });
+

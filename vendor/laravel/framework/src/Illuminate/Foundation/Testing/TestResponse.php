@@ -11,54 +11,33 @@ use Illuminate\Support\Traits\Macroable;
 use PHPUnit\Framework\Assert as PHPUnit;
 use Symfony\Component\HttpFoundation\Cookie;
 
-class TestResponse
+class TestResponse extends Response
 {
-    use Macroable {
-        __call as macroCall;
-    }
+    use Macroable;
 
     /**
-     * The reponse to delegate to.
-     *
-     * @var \Illuminate\Http\Response
-     */
-    public $baseResponse;
-
-    /**
-     * Create a new test response instance.
-     *
-     * @param  \Illuminate\Http\Response  $response
-     * @return void
-     */
-    public function __construct($response)
-    {
-        $this->baseResponse = $response;
-    }
-
-    /**
-     * Create a new TestResponse from another response.
+     * Convert the given response into a TestResponse.
      *
      * @param  \Illuminate\Http\Response  $response
      * @return static
      */
     public static function fromBaseResponse($response)
     {
-        return new static($response);
-    }
-
-    /**
-     * Assert that the response has a successful status code.
-     *
-     * @return $this
-     */
-    public function assertSuccessful()
-    {
-        PHPUnit::assertTrue(
-            $this->isSuccessful(),
-            'Response status code ['.$this->getStatusCode().'] is not a successful status code.'
+        $testResponse = new static(
+            $response->getContent(), $response->getStatusCode()
         );
 
-        return $this;
+        $testResponse->headers = $response->headers;
+
+        if (isset($response->original)) {
+            $testResponse->original = $response->original;
+        }
+
+        if (isset($response->exception)) {
+            $testResponse->exception = $response->exception;
+        }
+
+        return $testResponse;
     }
 
     /**
@@ -85,15 +64,13 @@ class TestResponse
      * @param  string  $uri
      * @return $this
      */
-    public function assertRedirect($uri = null)
+    public function assertRedirect($uri)
     {
         PHPUnit::assertTrue(
-            $this->isRedirect(), 'Response status code ['.$this->getStatusCode().'] is not a redirect status code.'
+            $this->isRedirect(), 'Response status code ['.$this->status().'] is not a redirect status code.'
         );
 
-        if (! is_null($uri)) {
-            PHPUnit::assertEquals(app('url')->to($uri), $this->headers->get('Location'));
-        }
+        PHPUnit::assertEquals(app('url')->to($uri), $this->headers->get('Location'));
 
         return $this;
     }
@@ -173,7 +150,7 @@ class TestResponse
      * Get the given cookie from the response.
      *
      * @param  string  $cookieName
-     * @return \Symfony\Component\HttpFoundation\Cookie|null
+     * @return Cookie|null
      */
     protected function getCookie($cookieName)
     {
@@ -198,19 +175,6 @@ class TestResponse
     }
 
     /**
-     * Assert that the given string is contained within the response text.
-     *
-     * @param  string  $value
-     * @return $this
-     */
-    public function assertSeeText($value)
-    {
-        PHPUnit::assertContains($value, strip_tags($this->getContent()));
-
-        return $this;
-    }
-
-    /**
      * Assert that the given string is not contained within the response.
      *
      * @param  string  $value
@@ -224,19 +188,6 @@ class TestResponse
     }
 
     /**
-     * Assert that the given string is not contained within the response text.
-     *
-     * @param  string  $value
-     * @return $this
-     */
-    public function assertDontSeeText($value)
-    {
-        PHPUnit::assertNotContains($value, strip_tags($this->getContent()));
-
-        return $this;
-    }
-
-    /**
      * Assert that the response is a superset of the given JSON.
      *
      * @param  array  $data
@@ -244,29 +195,9 @@ class TestResponse
      */
     public function assertJson(array $data)
     {
-        PHPUnit::assertArraySubset(
-            $data, $this->decodeResponseJson(), false, $this->assertJsonMessage($data)
-        );
+        PHPUnit::assertArraySubset($data, $this->decodeResponseJson());
 
         return $this;
-    }
-
-    /**
-     * Get the assertion message for assertJson.
-     *
-     * @param  array  $data
-     * @return string
-     */
-    protected function assertJsonMessage(array $data)
-    {
-        $expected = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-
-        $actual = json_encode($this->decodeResponseJson(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-
-        return 'Unable to find JSON: '.PHP_EOL.PHP_EOL.
-            "[{$expected}]".PHP_EOL.PHP_EOL.
-            'within response JSON:'.PHP_EOL.PHP_EOL.
-            "[{$actual}].".PHP_EOL.PHP_EOL;
     }
 
     /**
@@ -304,33 +235,6 @@ class TestResponse
             PHPUnit::assertTrue(
                 Str::contains($actual, $expected),
                 'Unable to find JSON fragment: '.PHP_EOL.PHP_EOL.
-                "[{$expected}]".PHP_EOL.PHP_EOL.
-                'within'.PHP_EOL.PHP_EOL.
-                "[{$actual}]."
-            );
-        }
-
-        return $this;
-    }
-
-    /**
-     * Assert that the response does not contain the given JSON fragment.
-     *
-     * @param  array  $data
-     * @return $this
-     */
-    public function assertJsonMissing(array $data)
-    {
-        $actual = json_encode(Arr::sortRecursive(
-            (array) $this->decodeResponseJson()
-        ));
-
-        foreach (Arr::sortRecursive($data) as $key => $value) {
-            $expected = substr(json_encode([$key => $value]), 1, -1);
-
-            PHPUnit::assertFalse(
-                Str::contains($actual, $expected),
-                'Found unexpected JSON fragment: '.PHP_EOL.PHP_EOL.
                 "[{$expected}]".PHP_EOL.PHP_EOL.
                 'within'.PHP_EOL.PHP_EOL.
                 "[{$actual}]."
@@ -598,43 +502,5 @@ class TestResponse
         }
 
         dd($content);
-    }
-
-    /**
-     * Dynamically access base response parameters.
-     *
-     * @param  string  $key
-     * @return mixed
-     */
-    public function __get($key)
-    {
-        return $this->baseResponse->{$key};
-    }
-
-    /**
-     * Proxy isset() checks to the underlying base response.
-     *
-     * @param  string  $key
-     * @return mixed
-     */
-    public function __isset($key)
-    {
-        return isset($this->baseResponse->{$key});
-    }
-
-    /**
-     * Handle dynamic calls into macros or pass missing methods to the base response.
-     *
-     * @param  string  $method
-     * @param  array  $parameters
-     * @return mixed
-     */
-    public function __call($method, $args)
-    {
-        if (static::hasMacro($method)) {
-            return $this->macroCall($method, $args);
-        }
-
-        return $this->baseResponse->{$method}(...$args);
     }
 }
