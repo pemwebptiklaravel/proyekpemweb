@@ -5,12 +5,12 @@
 	<div class="panel-heading">
 		<center>
 		<h1>
-		CRUD Laravel 5.3
+		Silahkan Edit Keluhan Anda
 		</h1>
 		</center>
 	</div>
 	<div class="panel-body">
-		<a href="{{ URL('kendaraan') }}" class="btn btn-raised btn-danger pull-left">Kembali</a>
+		<a href="{{ URL('keluhan') }}" class="btn btn-raised btn-danger pull-left">Kembali</a>
 		
 		{{-- part alert --}}
 				@if (Session::has('after_update'))
@@ -31,25 +31,21 @@
 			<div class="col-md-12"><hr>
 				<div class="col-md-2"></div>
 				<div class="col-md-8">
-					<form class="form-horizontal" action="{{ URL('keLUHAN/update/'. $showById->id) }}" method="POST">
+					<form class="form-horizontal" action="{{ URL('keluhan/update/'.$showById->id_keluhan) }}" method="POST">
 					{{ csrf_field() }}
 					  <fieldset>
 					    <legend>FORM EDIT KELUHAN</legend>
 							<div class = "form-group">
-							  <input type = "hidden" class = "form-control" name ="id_user" value="1">
+							  <input type = "hidden" class = "form-control" name ="id_user" value="{{ $showById->id_user}}">
 						   </div>
 						   <div class = "form-group">
 							 <input type = "hidden" class = "form-control" name ="status_keluhan" value="1">  
 						   </div>
 						   
-						   <div class = "form-group">
-								<input type="text" class = "form-control" name="id_keluhan" placeholder="Id Keluhan" value="{{ $showById->id_keluhan }}">
-							</div>
-						   
 							<label for = "name">Jenis Keluhan</label>
 							<div>
 								<label class = "checkbox-inline">
-								  <input type = "radio" name = "jenis_keluhan" id = "jenis_keluhan1" value = "1" checked> Kependidikkan
+								  <input type = "radio" name = "jenis_keluhan" id = "jenis_keluhan1" value = "1"> Kependidikkan
 							   </label>
 							   
 							   <label class = "checkbox-inline">
@@ -67,17 +63,12 @@
 								<label for = "name">Isi Keluhan</label>
 								<textarea class = "form-control" rows = "3" name="isi_keluhan" value="{{ $showById->isi_keluhan }}"></textarea>
 							</div>
-							<label for = "name">Keanoniman</label>
+			
 							<div>
-								 <label class = "checkbox-inline">
-								  <input type = "checkbox" name = "keanoniman" id = "keanoniman1" value = "1" checked> Ya
-							   </label>
-							   
-							   <label class = "checkbox-inline">
-								  <input type = "checkbox" name = "keanoniman" id = "keanoniman2" value = "2"> Tidak
-							   </label>
-							 </div>
-							
+								 <label >
+								  <input class = "checkbox-inline" type = "checkbox" name = "keanoniman" value = "1" > Keanoniman
+								</label>
+							  </div> 
 							<div class="form-group">
 						      <div class="col-md-12">
 						        <button type="submit" class="btn btn-raised btn-primary pull-right">Submit</button>

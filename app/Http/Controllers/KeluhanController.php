@@ -53,10 +53,10 @@ class KeluhanController extends Controller
 	}
 	
 	public function show($id_keluhan) {
-	$keluhans = \App\Keluhan::all();
+		$keluhans = \App\Keluhan::all();
 		
-	$showById = \App\Keluhan::find($id_keluhan);
-	return view('keluhan.edit', compact('showById', 'keluhans'));
+		$showById = \App\Keluhan::find($id_keluhan);
+		return view('crud.keluhan.edit', compact('showById', 'keluhans'));
 		
 	}
 	
@@ -64,7 +64,7 @@ class KeluhanController extends Controller
     {
  
         $validate = \Validator::make($request->all(), [
-            'id_keluhan' => 'required',
+			'jenis_keluhan' => 'required',
 			'isi_keluhan' => 'required'
 			
             ],
@@ -95,7 +95,6 @@ class KeluhanController extends Controller
 
  
         $data = [
-            'id_keluhan' => $request->id_keluhan,
 			'id_user' => $request->id_user,
 			'jenis_keluhan' => $request->jenis_keluhan,
             'isi_keluhan' => $request->isi_keluhan,
@@ -103,7 +102,6 @@ class KeluhanController extends Controller
 			'status_keluhan' => $request->status_keluhan
         ];
  
-        // di bawah ini proses update tabel kendaraan, jika kolom id sama dengan $id yang dikirim dari form
  
         $update = \App\Keluhan::where('id_keluhan', $id_keluhan)->update($data);
  

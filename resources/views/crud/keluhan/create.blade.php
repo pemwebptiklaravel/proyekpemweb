@@ -5,12 +5,12 @@
 	<div class="panel-heading">
 		<center>
 		<h1>
-		CRUD Laravel 5.3
+		Isi Keluhan Anda
 		</h1>
 		</center>
 	</div>
 	<div class="panel-body">
-		<a href="{{ URL('kendaraan') }}" class="btn btn-raised btn-danger pull-left">Kembali</a>
+		<a href="{{ URL('keluhan') }}" class="btn btn-raised btn-danger pull-left">Kembali</a>
 		{{-- part alert --}}
 		@if (Session::has('after_save'))
 			<div class="row">
