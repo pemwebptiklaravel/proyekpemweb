@@ -12,12 +12,12 @@
 		<!-- Bootstrap -->
 		<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
 		<!-- Bootstrap Material Design -->
-		<link href="{{ asset('bootstrap-material-design-master/dist/css/bootstrap-material-design.css') }}" rel="stylesheet">
-		<link href="{{ asset('bootstrap-material-design-master/dist/css/ripples.min.css') }}" rel="stylesheet">
+		<link href="<?php echo e(asset('bootstrap-material-design-master/dist/css/bootstrap-material-design.css')); ?>" rel="stylesheet">
+		<link href="<?php echo e(asset('bootstrap-material-design-master/dist/css/ripples.min.css')); ?>" rel="stylesheet">
 		<!-- Dropdown.js -->
 		<link href="//cdn.rawgit.com/FezVrasta/dropdown.js/master/jquery.dropdown.css" rel="stylesheet">
 		<!-- Page style -->
-		<link href="{{ asset('bootstrap-material-design-master/index.css') }}" rel="stylesheet">
+		<link href="<?php echo e(asset('bootstrap-material-design-master/index.css')); ?>" rel="stylesheet">
 		<!-- jQuery -->
 		<a href="//code.jquery.com/jquery-1.10.2.min.js"><!--//code.jquery.com/jquery-1.10.2.min.js--></a>
 		
@@ -53,7 +53,7 @@
 			</div>
 		</div>
 		<div class="container">
-			@yield('content') 
+			<?php echo $__env->yieldContent('content'); ?> 
 			<!--untuk menampung content-->
 		</div>
 		<!--

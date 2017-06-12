@@ -3,16 +3,24 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Keluhan;
+use Illuminate\Support\Facades\DB;
 
 class KeluhanController extends Controller
 {
     public function index()
     {
-    	return view('crud.keluhan.tampilkan');
+
+    	//$keluhans = Keluhan::all();
+    	$keluhans = DB::table('keluhans')
+    				->join('jenis_keluhans', 'keluhans.jenis_keluhan', '=', 'jenis_keluhans.id_jenis_keluhan')
+    				->get();
+
+    	return view('crud.keluhan.tampilkan', ['keluhans' => $keluhans]);
     }
 	public function create()
 	{
-		$keluhans = \App\Keluhan::all();
+		$keluhans = Keluhan::all();
 		return view('crud.keluhan.create', compact('keluhans'));
 	}
 	public function store (Request $request)
@@ -20,9 +28,6 @@ class KeluhanController extends Controller
 		$validate = \Validator::make($request->all(), [
 			'jenis_keluhan' => 'required',
 			'isi_keluhan' => 'required'
-			
-			
-		
 		],
 		$after_save =[
 			'alert'=>'danger',
@@ -103,9 +108,24 @@ class KeluhanController extends Controller
         ];
  
  
-        $update = \App\Keluhan::where('id_keluhan', $id_keluhan)->update($data);
+        $update = Keluhan::where('id_keluhan', $id_keluhan)->update($data);
  
         
         return redirect()->to('keluhan')->with('after_update', $after_update);
     }
+     public function destroy($id)
+	{
+      // Item::find($id_keluhan)->delete();
+      // return redirect()->route('keluhan.tampilkan')
+      //                 ->with('success','Item deleted successfully');
+		$datakeluhan = Keluhan::find($id);
+		$datakeluhan->delete();
+		return redirect('keluhan');
+    }
+
+	public function getOne()
+	{
+		$keluhans = Keluhan::get();
+		return view('keluhan.tampilkan', compact('keluhans'));
+	}
 }

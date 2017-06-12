@@ -1,5 +1,4 @@
-@extends('layouts.app')
-@section('content')
+<?php $__env->startSection('content'); ?>
  
 <div class="panel panel-info">
 	<div class="panel-heading">
@@ -10,26 +9,28 @@
 		</center>
 	</div>
 	<div class="panel-body">
-		<a href="{{ URL('keluhan') }}" class="btn btn-raised btn-danger pull-left">Kembali</a>
-		{{-- part alert --}}
-		@if (Session::has('after_save'))
+		<a href="<?php echo e(URL('keluhan')); ?>" class="btn btn-raised btn-danger pull-left">Kembali</a>
+		
+		<?php if(Session::has('after_save')): ?>
 			<div class="row">
 				<div class="col-md-12">
-					<div class="alert alert-dismissible alert-{{ Session::get('after_save.alert') }}">
+					<div class="alert alert-dismissible alert-<?php echo e(Session::get('after_save.alert')); ?>">
 					  <button type="button" class="close" data-dismiss="alert">×</button>
-					  <strong>{{ Session::get('after_save.title') }}</strong>
-					  <a href="javascript:void(0)" class="alert-link">{{ Session::get('after_save.text-1') }}</a> {{ Session::get('after_save.text-2') }}
+					  <strong><?php echo e(Session::get('after_save.title')); ?></strong>
+					  <a href="javascript:void(0)" class="alert-link"><?php echo e(Session::get('after_save.text-1')); ?></a> <?php echo e(Session::get('after_save.text-2')); ?>
+
 					</div>
 				</div>
 			</div>
-		@endif
-		{{-- end part alert --}}
+		<?php endif; ?>
+		
 		<div class="row">
 			<div class="col-md-12"><hr>
 				<div class="col-md-2"></div>
 				<div class="col-md-8">
-					<form class="form-horizontal" action="{{ URL('keluhan/store') }}" method="POST">
-					{{ csrf_field() }}
+					<form class="form-horizontal" action="<?php echo e(URL('keluhan/store')); ?>" method="POST">
+					<?php echo e(csrf_field()); ?>
+
 					  <fieldset>
 					    <legend>FORM TAMBAH KELUHAN</legend>
 							<div class = "form-group">
@@ -81,4 +82,5 @@
 	</div>
 </div>
  
-@stop
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

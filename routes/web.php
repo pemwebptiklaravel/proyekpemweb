@@ -17,15 +17,18 @@ Route::get('/', function () {
 
 
 
-Route::resource ('keluhan','KeluhanController');
+Route::resource('keluhan','KeluhanController');
 Route::group(['prefix' => 'keluhan'], function(){
 
-	Route::get('/keluhan', 'KeluhanController@index');
-	Route::get('/create', 'KeluhanController@create');
-	Route::post('/store', 'KeluhanController@store');
-	Route::get('/show/{id}', 'KeluhanController@show');
-	Route::post('/update/{id}', 'KeluhanController@update');
-	
+ 	Route::get('/keluhan', 'KeluhanController@index');
+ 	Route::get('/create', 'KeluhanController@create');
+ 	Route::post('/store', 'KeluhanController@store');
+ 	Route::get('/show/{id}', 'KeluhanController@show');
+ 	Route::post('/update/{id}', 'KeluhanController@update');
+	Route::delete('keluhan/{id}', 'KeluhanController@destroy');
+ 	Route::get('/keluhan', 'KeluhanController@getOne');
+ });
 
-});
+
+
 
